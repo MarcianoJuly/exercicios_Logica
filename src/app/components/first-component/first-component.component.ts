@@ -74,6 +74,7 @@ export class FirstComponentComponent implements OnInit{
     if(!await this.listService.getAddress(this.dados)){
       this.localDisabled = false;
     }else{
+      this.toggleMessage("CEP invalido");
       this.clearLock()
     }
   }
@@ -88,15 +89,52 @@ export class FirstComponentComponent implements OnInit{
     this.localDisabled = true;
   }
 
-  submitForm(): void {
-   // toggleLoader(); // Ativa o loader
+  clearForm(): void{
+    this.dados.name= '',
+    this.dados.cpfClient= 0,
+    this.dados.bornIn= new Date(),
+    this.dados.emailClient= '',
+    this.dados.telephones= 0,
+    this.dados.cep= 0;
+    this.clearLock();
+  }
+
+  // toggleLoader() {
+  //   const loaderElement = document.querySelector("#loader");
+  //   const fadeElement = document.querySelector("#fade");
+
+  //   fadeElement.classList.toggle("hide");
+  //   loaderElement.classList.toggle("hide");
+  // }
+
+  toggleMessage = (msg: string | null = null) => {
+    const messageElement = document.querySelector("#message");
+    const messageTextElement = document.querySelector("#message p");
   
-    // this.listService.postData(this.dados).subscribe(() => {
-    //   toggleLoader(); // Desativa o loader após receber resposta do servidor
-    //   toggleMessage("Cadastro concluído"); // Mostra mensagem de sucesso
-      this.formulario.reset(); // Limpa os campos do formulário
-      
+    if (messageElement && messageTextElement) {
+      messageTextElement.textContent = msg || '';
+      frameElement!.classList.toggle("hide");
+      messageElement.classList.toggle("hide");
+    }
   };
+
+  //Close message modal
+  closeButtonHandler() {
+    this.toggleMessage("");
+  }
+  
+  onSubmitHandler() {
+    //this.toggleLoader();
+    console.log("chegou")
+  setTimeout(() => {
+    //this.toggleLoader();
+    
+    this.toggleMessage("Cadastro concluido");
+
+    this.clearForm();
+
+    }, 1000);
+  }
 
 
   ngOnInit(): void {
@@ -107,5 +145,6 @@ export class FirstComponentComponent implements OnInit{
     cepInput.addEventListener('keyup', this.obterEndereco.bind(this));
   }
 }
+
 
 
