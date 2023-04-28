@@ -11,7 +11,7 @@ import { dataClient } from './dataClient';
 })
 
 export class FirstComponentComponent implements OnInit{
-  formulario = new FormControl({
+  formulario = new FormGroup({
     name: new FormControl(''),
     cpfClient: new FormControl(''),
     bornIn: new FormControl(''),
@@ -40,6 +40,8 @@ export class FirstComponentComponent implements OnInit{
     city: '',
     regionState: '',
   };
+
+  localDisabled: boolean = true;
 
   constructor(private listService: ListService){};
 
@@ -70,9 +72,9 @@ export class FirstComponentComponent implements OnInit{
     // código para obter o endereço a partir do CEP
     // if(!await this.listService.avaliaSe(this.dados.cep)){
     if(!await this.listService.getAddress(this.dados)){
-        console.log("Deu certo")
+      this.localDisabled = false;
     }else{
-      
+      this.clearLock()
     }
   }
 
@@ -83,11 +85,23 @@ export class FirstComponentComponent implements OnInit{
     this.dados.neighborhood = '',
     this.dados.city = '',
     this.dados.regionState= '';
+    this.localDisabled = true;
   }
+
+  submitForm(): void {
+   // toggleLoader(); // Ativa o loader
+  
+    // this.listService.postData(this.dados).subscribe(() => {
+    //   toggleLoader(); // Desativa o loader após receber resposta do servidor
+    //   toggleMessage("Cadastro concluído"); // Mostra mensagem de sucesso
+      this.formulario.reset(); // Limpa os campos do formulário
+      
+  };
+
 
   ngOnInit(): void {
     const cepInput = document.getElementById('cepInput') as HTMLInputElement;
-    const addressForm = document.querySelector('#address-form') as HTMLFormElement;
+    const addressForm = document.querySelector('address-form') as HTMLFormElement;
 
     cepInput.addEventListener('keypress', this.validarCEP);
     cepInput.addEventListener('keyup', this.obterEndereco.bind(this));
